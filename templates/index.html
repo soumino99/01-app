@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>箱ひげ図アプリ</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <h1>CSVをアップロードして箱ひげ図を描画</h1>
+    <form method="POST" enctype="multipart/form-data">
+      <input type="file" name="csv_file" accept=".csv" required />
+      <button type="submit">アップロード</button>
+    </form>
+
+    {% if image_url %}
+    <h2>描画結果：</h2>
+    <img src="{{ url_for('static', filename=image_url) }}" alt="boxplot" />
+    {% endif %}
+  </body>
+</html>
