@@ -1,22 +1,57 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>箱ひげ図アプリ</title>
+    <title>一次関数描画アプリ</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
+    <script>
+      function updateValue(id, value) {
+        document.getElementById(id).innerText = value;
+      }
+    </script>
   </head>
   <body>
-    <h1>CSVをアップロードして箱ひげ図を描画</h1>
-    <form method="POST" enctype="multipart/form-data">
-      <input type="file" name="csv_file" accept=".csv" required />
-      <button type="submit">アップロード</button>
+    <h1>一次関数を描画</h1>
+    <form method="POST">
+      <label for="slope">傾き (slope):</label>
+      <input
+        type="range"
+        id="slope"
+        name="slope"
+        min="-10"
+        max="10"
+        step="0.1"
+        value="{{ slope }}"
+        oninput="updateValue('slopeValue', this.value)"
+      />
+      <span id="slopeValue">{{ slope }}</span>
+      <br />
+
+      <label for="intercept">切片 (intercept):</label>
+      <input
+        type="range"
+        id="intercept"
+        name="intercept"
+        min="-10"
+        max="10"
+        step="0.1"
+        value="{{ intercept }}"
+        oninput="updateValue('interceptValue', this.value)"
+      />
+      <span id="interceptValue">{{ intercept }}</span>
+      <br />
+
+      <button type="submit">描画</button>
     </form>
 
     {% if image_url %}
     <h2>描画結果：</h2>
-    <img src="{{ url_for('static', filename=image_url) }}" alt="boxplot" />
+    <img
+      src="{{ url_for('static', filename=image_url) }}"
+      alt="linear function plot"
+    />
     {% endif %}
   </body>
 </html>

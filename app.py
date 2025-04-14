@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
-import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 import os
 
 app = Flask(__name__)
@@ -10,20 +10,27 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/', methods=['GET', 'POST'])
 def index():
     image_url = None
+    slope = 1  # Initial value
+    intercept = 0  # Initial value
     if request.method == 'POST':
-        file = request.files['csv_file']
-        if file and file.filename.endswith('.csv'):
-            df = pd.read_csv(file)
+        slope = float(request.form.get('slope', 1))
+        intercept = float(request.form.get('intercept', 0))
+        x = np.linspace(-10, 10, 500)
+        y = slope * x + intercept
+        plt.figure()
+        plt.plot(x, y, label=f"y = {slope}x + {intercept}")
+        plt.axhline(0, color='black', linewidth=0.5, linestyle='--')
+        plt.axvline(0, color='black', linewidth=0.5, linestyle='--')
+        plt.title("Linear Function Plot")  # Title in English
+        plt.xlabel("x")  # x-axis label in English
+        plt.ylabel("y")  # y-axis label in English
+        plt.legend()
+        path = os.path.join(app.config['UPLOAD_FOLDER'], 'linear_function_plot.png')
+        plt.savefig(path)
+        plt.close()
+        image_url = 'linear_function_plot.png'
 
-            plt.figure()
-            df.plot.box()
-            plt.title("Boxplot from CSV")
-            path = os.path.join(app.config['UPLOAD_FOLDER'], 'boxplot.png')
-            plt.savefig(path)
-            plt.close()
-            image_url = 'boxplot.png'
-
-    return render_template('index.html', image_url=image_url)
+    return render_template('index.html', image_url=image_url, slope=slope, intercept=intercept)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host='0.0.0.0')
